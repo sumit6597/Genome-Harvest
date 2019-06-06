@@ -1,0 +1,127 @@
+<!-- La prior est positionnee dans ce fichier pour accepter plus facilement des reticulations, elle s'attend en gros a deux reticulations. 
+(Precedemment on avait une prior qui conduisait a rejeter toute reticulation)
+-->
+
+<beast namespace="beast.core:beast.core.util:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.branchratemodel:beast.evolution.likelihood" version="2.4">
+
+    <map name="Uniform">beast.math.distributions.Uniform</map>
+    <map name="Exponential">beast.math.distributions.Exponential</map>
+    <map name="LogNormal">beast.math.distributions.LogNormalDistributionModel</map>
+    <map name="Normal">beast.math.distributions.Normal</map>
+    <map name="Beta">beast.math.distributions.Beta</map>
+    <map name="Gamma">beast.math.distributions.Gamma</map>
+    <map name="LaplaceDistribution">beast.math.distributions.LaplaceDistribution</map>
+    <map name="InverseGamma">beast.math.distributions.InverseGamma</map>
+    <map name="OneOnX">beast.math.distributions.OneOnX</map>
+    <map name="prior">beast.math.distributions.Prior</map>
+
+
+<data spec='speciesnetwork.SnapData' id="snapalignment" name="alignment" statecount='3' dataType="integer"> 
+<rawdata  id="rawdata" spec='Alignment' dataType='binary'>
+
+		<sequence id="a1" taxon="A_a1" totalcount="2"> 0011101011000000110101001011000110000010011001111110110000011100110100110010101010000000011011011111010011111110100101100110001101010101010010111100100100110010001100111000101111000001010011100100110010010111011111011000100111010111100100101011010111000101011101101100011101011000000110110101001110010011110001101010110100111100000100011110010101111101101110101110101101011101001011110001111101100001000101010110011101111011110111000101000010000110000000111101110110001000110110101111011110101110111100001011011111100111100101110100010101001011011000011011111110001011011010110110010111000111111010011111011100001110001000000010111111010110010101001011101000011110000111000111010110101010011110111010001001101101011101110001100010111100011011011011010011110111100111110000111001001001000001101110010011001010100100001100100000010011000000110010011001101000100010100010011100101010000111000011001101000011101001110000100111111110011110101010111001010010000111010111111001001110010101111001101000100001 </sequence>
+		<sequence id="b1" taxon="B_b1" totalcount="2"> 0011101011000000010111001011000100001010011001111110110100111000110100110110101010000000001011011111011011111110100001000110001101010101010010001100100100111010000100101001101111100001110011100100110110010111011111011000100111010111101110101011010111001101011101101100011001011000000110110101011110010011101110101010110110111100101000011100010001111101101110101110101101011101001011100001111101110101000101011100011101110011110111000101000110000100010000111101100110001000110110101111111110101010111110001010011111100011101101110100010101001011011000111010111110001011110010110010010111000111111010011010011100001110100000011010111011010101000111001011001000011110000110000111010110101010011110111010001001100111011001110001000010111100101011011011010011110111100011110110111001001001010001001110000011000010100100001101000010010011000001110010011001101000100010000100011100101010000001001011111111110011101001110000100111111110011110101000101000010010000101010011011001011110010101101001101000100001 </sequence>
+		<sequence id="c1" taxon="C_c1" totalcount="2"> 1011101011000000010111001011000100001010011001111111010100011000010100111111101011000000001111011111011011111110100001000110001100010101000010011100100100110010100100101101110101100001010011100000110110010110011111011000100100010101111100101011000111001101011101100110011001011000000010110101011110010011011000001010100000111110101000011111010101111101001110101110101101011101001011100001111100010101000101011101011101110011110111001101000110000100000100111001111110001001110110101111111110101110011110001010011110100011101101010100010101001011011000001010111110001011111010110010010110100111111010011011011100001110100000010010111001010111010111001011001010011110000111010111010110100010011110101010001001110111011001111001000010011100101011011111010011110011100011110110111001001001000001101110010011000110000100001101110010010011000001100010011001101000110000100000111100101010000111001011111001100011101000110000100111111110001111001000100000010010010101010011011001111110010101101001111100000001 </sequence>
+</rawdata>
+<taxonset id="A" spec="TaxonSet">
+	<taxon id="A_a1" spec="Taxon"/>
+</taxonset>
+<taxonset id="C" spec="TaxonSet">
+	<taxon id="C_c1" spec="Taxon"/>
+</taxonset>
+<taxonset id="B" spec="TaxonSet">
+	<taxon id="B_b1" spec="Taxon"/>
+</taxonset>
+
+</data>
+
+ <init spec="beast.util.TreeParser" id="newick:species" IsLabelledNewick="true" adjustTipHeights="false" newick="((A:0.035,B:0.035):0.05,C:0.085):0.1;"/> 
+    <run id="mcmc" spec="MCMC" chainLength="1000" storeEvery="100">
+        <state id="state">
+        <stateNode id="network:species" spec="speciesnetwork.NetworkParser" tree="@newick:species">  	 
+	</stateNode>
+
+<!-- be careful, originTime:species is a scaling factor, if you do not want to scale anything it has to be set to the same value as origin (the height of) the network -->
+	<parameter id="originTime:species" lower="0.0" name="stateNode">0.8</parameter>
+	
+        <parameter id="netDivRate:species" lower="0.0" name="stateNode">10.0</parameter>
+        <parameter id="turnOverRate:species" lower="0.0" upper="1.0" name="stateNode">0.66</parameter>
+        <parameter id="u" lower="0.0" upper="1.0" name="stateNode">1.0</parameter>
+	<parameter id="v" lower="0.0" upper="1.0" name="stateNode">1.0</parameter>
+	<parameter id="coalescenceRate" lower="0.0" upper="1.0" name="stateNode">0.01</parameter>
+	<parameter id="alpha" lower="0.0"  name="stateNode">2.0</parameter>
+	<parameter id="beta" lower="0.0"  name="stateNode">20.0</parameter>
+	<parameter id="kappa" lower="0.0"  name="stateNode">34.6574</parameter>
+      </state>
+
+
+        <init id="SNI" spec="speciesnetwork.MySpeciesNetworkInitializerWithoutEmbedding" estimate="false" method="random" speciesNetwork="@network:species" origin="@originTime:species">
+        </init>
+
+        <distribution id="posterior" spec="util.CompoundDistribution">
+            
+            <!-- Prior de mi-juin (CE) -->
+            <distribution id="prior" spec="util.CompoundDistribution">
+                <distribution id="networkPrior" spec="speciesnetwork.BirthHybridizationModel" network="@network:species" netDiversification="@netDivRate:species" turnOver="@turnOverRate:species" betaShape="1.0"/>
+                <prior id="networkOrigin" name="distribution" x="@originTime:species">
+                    <Exponential id="exponential.0" name="distr" mean="0.1"/>
+                </prior>
+                <prior id="netDivPrior" name="distribution" x="@netDivRate:species">
+                    <Exponential id="exponential.01" name="distr" mean="10.0"/>
+                </prior>
+                <prior id="turnOverPrior" name="distribution" x="@turnOverRate:species">
+                    <!-- Beta(2,1) -->
+                    <Beta id="betadistr.01" name="distr" alpha="2.0" beta="1.0"/>
+                </prior>
+		          <distribution spec="snaplikelihood.SnAPPriorGH" name='distribution' id='snapprior' 
+                    kappa='@kappa' alpha='@alpha' beta='@beta' coalescenceRate='@coalescenceRate'/>
+	        </distribution>
+
+            <distribution id="likelihood" spec="speciesnetwork.SnAPTreeLikelihoodGH" data='@snapalignment' speciesNetwork="@network:species" mutationRateU="@u"
+			     mutationRateV="@v" coalescenceRate='@coalescenceRate'>
+	       </distribution>
+        </distribution>
+
+	<operator id="divrRateScale:species" spec="ScaleOperator" parameter="@netDivRate:species" scaleFactor="0.5" weight="10.0"/>
+        <operator id="turnOverScale:species" spec="ScaleOperator" parameter="@turnOverRate:species" scaleFactor="0.5" weight="10.0"/>
+        <operator id="gammaProbUniform:species" spec="speciesnetwork.operators.GammaProbUniform" speciesNetwork="@network:species" weight="10.0"/>
+        <operator id="gammaProbRndWalk:species" spec="speciesnetwork.operators.GammaProbRndWalk" speciesNetwork="@network:species" weight="10.0"/>
+        
+        <operator id="originMultiplier:species" spec="speciesnetwork.operators.OriginMultiplier" speciesNetwork="@network:species" origin="@originTime:species" weight="0.0"/>
+
+
+	<operator id="addReticulation:species" spec="speciesnetwork.operators.AddReticulationGH" speciesNetwork="@network:species" weight="10.0" coalescenceRate='@coalescenceRate'/>
+
+	<operator id="deleteReticulation:species" spec="speciesnetwork.operators.DeleteReticulationGH" speciesNetwork="@network:species" weight="10.0"  coalescenceRate='@coalescenceRate'/>
+
+	 <operator id="networkMultiplier:species" spec="speciesnetwork.operators.MyNetworkMultiplierWithoutGeneTrees" speciesNetwork="@network:species" origin="@originTime:species" weight="10.0"/>
+         <operator id="flipReticulation:species" spec="speciesnetwork.operators.FlipReticulation" speciesNetwork="@network:species" weight="10.0"/>
+	 <operator id="relocateBranch:species" spec="speciesnetwork.operators.RelocateBranch" speciesNetwork="@network:species" weight="10.0"/>
+	 <operator id="nodeSlider:species" spec="speciesnetwork.operators.NodeSlider" speciesNetwork="@network:species" origin="@originTime:species" isNormal="true" sigma="0.005" weight="10.0"/>	 
+	 <operator id="NodeUniform:species" spec="speciesnetwork.operators.NodeUniform" speciesNetwork="@network:species" weight="10.0"/>
+	 <operator id="relocateBranchNarrow:species" spec="speciesnetwork.operators.RelocateBranchNarrow" speciesNetwork="@network:species" weight="10.0"/>
+	 <operator id="ChangeUAndV" spec="snapp.operators.MutationMover" u="@u" v="@v" window="0.1"  weight="10"/> 
+	 <operator id='ChangeGamma' spec="snapp.operators.GammaMoverGH"  scale='0.5' weight="10" coalescenceRate='@coalescenceRate'/> 
+ 	 <operator id='ChangeAllGamma' spec="snapp.operators.GammaMoveAllGH"  scale='0.5' weight="10" coalescenceRate='@coalescenceRate'/>
+
+ 
+        <logger id="screenlog" logEvery="1000" model="@posterior">
+            <log idref="posterior"/>
+            <log id="ESS.0" spec="util.ESS" arg="@posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+        </logger>
+        <logger id="tracelog" fileName="progCE_input_ABC-0.05-1k-1.log" logEvery="1000" model="@posterior" sort="smart">            <log idref="posterior"/>
+            <log idref="likelihood"/>
+            <log idref="prior"/>
+            <log idref="netDivRate:species"/>
+            <log idref="turnOverRate:species"/>
+            <log idref="originTime:species"/>
+            <log id="height:species" speciesNetwork="@network:species" spec="speciesnetwork.NetworkStatLogger"/>
+	    <log idref="u"/>
+	    <log idref="v"/>
+        </logger>
+        <logger id="specieslog" fileName="progCE_input_ABC-0.05-1k-1.nex" logEvery="1000" mode="tree">            <log id="networkLogger:species" spec="speciesnetwork.NetworkWithMetaDataLoggerGH" speciesNetwork="@network:species" coalescenceRate='@coalescenceRate'/>
+        </logger>
+    </run>
+</beast>

@@ -1,0 +1,63 @@
+#
+#model:
+#
+#<?xml version="1.0" encoding="UTF-8" standalone="no"?><input id="posterior" spec="beast.core.util.CompoundDistribution">
+#    <distribution id="prior" spec="beast.core.util.CompoundDistribution">
+#        <distribution id="networkPrior" spec="speciesnetwork.BirthHybridizationModel">
+#            <network id="network:species" spec="speciesnetwork.NetworkParser">
+#                <tree IsLabelledNewick="true" adjustTipHeights="false" id="newick:species" newick="((A:0.035,B:0.035):0.05,C:0.085):0.1;" spec="beast.util.TreeParser">
+#                    <taxonset id="TaxonSet" spec="beast.evolution.alignment.TaxonSet">
+#                        <taxon id="A" spec="beast.evolution.alignment.Taxon"/>
+#                        <taxon id="B" spec="beast.evolution.alignment.Taxon"/>
+#                        <taxon id="C" spec="beast.evolution.alignment.Taxon"/>
+#                    </taxonset>
+#                </tree>
+#            </network>
+#            <parameter id="netDivRate:species" lower="0.0" name="netDiversification">10.0</parameter>
+#            <parameter id="turnOverRate:species" lower="0.0" name="turnOver" upper="1.0">0.66</parameter>
+#            <parameter id="RealParameter" lower="0.0" name="betaShape" upper="0.0">1.0</parameter>
+#        </distribution>
+#        <prior id="networkOrigin" name="distribution">
+#            <parameter id="originTime:species" lower="0.0" name="x">0.8</parameter>
+#            <Exponential id="exponential.0" name="distr">
+#                <parameter id="RealParameter1" lower="0.0" name="mean" upper="0.0">0.1</parameter>
+#            </Exponential>
+#        </prior>
+#        <prior id="netDivPrior" name="distribution" x="@netDivRate:species">
+#            <Exponential id="exponential.01" name="distr">
+#                <parameter id="RealParameter2" lower="0.0" name="mean" upper="0.0">10.0</parameter>
+#            </Exponential>
+#        </prior>
+#        <prior id="turnOverPrior" name="distribution" x="@turnOverRate:species">
+#            <Beta id="betadistr.01" name="distr">
+#                <parameter id="RealParameter3" lower="0.0" name="alpha" upper="0.0">2.0</parameter>
+#                <parameter id="RealParameter4" lower="0.0" name="beta" upper="0.0">1.0</parameter>
+#            </Beta>
+#        </prior>
+#        <distribution id="snapprior" spec="snaplikelihood.SnAPPriorGH">
+#            <parameter id="alpha" lower="0.0" name="alpha">2.0</parameter>
+#            <parameter id="beta" lower="0.0" name="beta">20.0</parameter>
+#            <parameter id="kappa" lower="0.0" name="kappa">34.6574</parameter>
+#            <parameter dimension="4" id="coalescenceRate" lower="0.0" name="coalescenceRate" upper="10.0">0.01 0.01 0.01 0.01</parameter>
+#        </distribution>
+#    </distribution>
+#    <distribution coalescenceRate="@coalescenceRate" id="likelihood" spec="speciesnetwork.SnAPTreeLikelihoodGH" speciesNetwork="@network:species">
+#        <data dataType="integer" id="snapalignment" spec="speciesnetwork.SnapData" statecount="3">
+#            <taxonset id="A1" spec="beast.evolution.alignment.TaxonSet">
+#                <taxon id="A_a1" spec="beast.evolution.alignment.Taxon"/>
+#            </taxonset>
+#            <taxonset id="C1" spec="beast.evolution.alignment.TaxonSet">
+#                <taxon id="C_c1" spec="beast.evolution.alignment.Taxon"/>
+#            </taxonset>
+#            <taxonset id="B1" spec="beast.evolution.alignment.TaxonSet">
+#                <taxon id="B_b1" spec="beast.evolution.alignment.Taxon"/>
+#            </taxonset>
+#        </data>
+#        <parameter id="u" lower="0.0" name="mutationRateU" upper="1.0">1.0</parameter>
+#        <parameter id="v" lower="0.0" name="mutationRateV" upper="1.0">1.0</parameter>
+#    </distribution>
+#</input>
+#
+Sample	posterior	likelihood	prior	netDivRate:species	turnOverRate:species	originTime:species	network:species.height	network:species.length	u	v
+0	-17423.675050958296	-1388.5303757364818	-16035.144675221814	10.0	0.66	0.8	0.32941176470588235	1.4588235294117649	1.0299174118733632	0.9717716278017747
+1000	-757.8541584452701	-693.6731854714833	-64.18097297378674	10.824966910455665	0.5061409057865459	0.1876508071728345	0.0	0.21167350836284066	0.9451216982459694	1.0616441548123605
